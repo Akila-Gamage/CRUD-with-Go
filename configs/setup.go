@@ -8,7 +8,6 @@ import (
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"golang.org/x/vuln/client"
 )
 
 func ConnectDB() *mongo.Client {
@@ -17,7 +16,7 @@ func ConnectDB() *mongo.Client {
 		log.Fatal(err)
 	}
 
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, _ := context.WithTimeout(context.Background(), 15*time.Second)
 	err = client.Connect(ctx)
 	if err != nil {
 		log.Fatal(err)
@@ -29,4 +28,11 @@ func ConnectDB() *mongo.Client {
 	}
 	fmt.Println("Connected to MongoDB")
 	return client
+}
+
+var DB *mongo.Client = ConnectDB()
+
+func GetCollection(client *mongo.Client, colletionName string) *mongo.Collection {
+	collection := client.Database("golangAPI").Collection(colletionName)
+	return collection
 }
