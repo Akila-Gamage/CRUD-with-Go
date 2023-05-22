@@ -1,9 +1,16 @@
 package routes
 
-import "github.com/labstack/echo/v4"
+import (
+	"crud-with-go/controllers"
+
+	"github.com/labstack/echo/v4"
+)
 
 
 
 func UserRoute(e *echo.Echo){
-	// All routes
+	// All relavant routes
+	e.POST("/user", controllers.CreateUser)
+	e.GET("/user/:userId", controllers.GetUser)
+	e.PUT("/user/:userId", controllers.EditUser)
 }
