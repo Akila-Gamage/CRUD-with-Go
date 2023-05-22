@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"time"
-
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -16,7 +15,7 @@ func ConnectDB() *mongo.Client {
 		log.Fatal(err)
 	}
 
-	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, _ := context.WithTimeout(context.Background(), 15*time.Second)
 	err = client.Connect(ctx)
 	if err != nil {
 		log.Fatal(err)

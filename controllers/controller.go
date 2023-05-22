@@ -19,7 +19,7 @@ var userCollection *mongo.Collection = configs.GetCollection(configs.DB, "users"
 
 //function to create user
 func CreateUser(c echo.Context) error {			
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	var user models.User
 	defer cancel()
 
@@ -30,14 +30,14 @@ func CreateUser(c echo.Context) error {
 
 	newUser := models.User {
 		Id: primitive.NewObjectID(),
-		UserName: user.UserName,
+		Name: user.Name,
 		Email: user.Email,
 		Password: user.Password,
 	}
 
 	result, err := userCollection.InsertOne(ctx, newUser)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, responses.Response{Status: http.StatusInternalServerError, Message: "server error", Data: &echo.Map{"data": err.Error()}})
+		return c.JSON(http.StatusInternalServerError, responses.Response{Status: http.StatusInternalServerError, Message: "error", Data: &echo.Map{"data": err.Error()}})
 	}
 
 	return c.JSON(http.StatusCreated, responses.Response{Status: http.StatusCreated, Message: "success", Data: &echo.Map{"data": result}})
@@ -46,7 +46,7 @@ func CreateUser(c echo.Context) error {
 
 //function to get/read a user
 func GetUser(c echo.Context) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	userId := c.Param("userId")
 	var user models.User
 	defer cancel()
@@ -56,7 +56,7 @@ func GetUser(c echo.Context) error {
 	err := userCollection.FindOne(ctx, bson.M{"id": objectId}).Decode(&user)
 
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, responses.Response{Status: http.StatusInternalServerError, Message: "server error", Data: &echo.Map{"data": err.Error()}})	
+		return c.JSON(http.StatusInternalServerError, responses.Response{Status: http.StatusInternalServerError, Message: "error", Data: &echo.Map{"data": err.Error()}})	
 	}
 
 	return c.JSON(http.StatusOK, responses.Response{Status: http.StatusOK, Message: "success", Data: &echo.Map{"data": user}})
@@ -64,7 +64,7 @@ func GetUser(c echo.Context) error {
 
 // function to Edit/Update a user
 func EditUser(c echo.Context) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	userId := c.Param("userId")
 	var user models.User
 	defer cancel()
@@ -75,12 +75,12 @@ func EditUser(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, responses.Response{Status: http.StatusBadRequest, Message: "error", Data: &echo.Map{"data": err.Error()}})
 	}
 
-	update := bson.M{"username": user.UserName, "email": user.Email, "password": user.Password}
+	update := bson.M{"name": user.Name, "email": user.Email, "password": user.Password}
 
 	result, err := userCollection.UpdateOne(ctx, bson.M{"id": objectId}, bson.M{"$set": update})
 
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, responses.Response{Status: http.StatusInternalServerError, Message: "server error", Data: &echo.Map{"data": err.Error()}})
+		return c.JSON(http.StatusInternalServerError, responses.Response{Status: http.StatusInternalServerError, Message: "error", Data: &echo.Map{"data": err.Error()}})
 	}
 
 	var updatedUser models.User
@@ -88,7 +88,7 @@ func EditUser(c echo.Context) error {
 		err = userCollection.FindOne(ctx, bson.M{"id": objectId}).Decode(&updatedUser)
 
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, responses.Response{Status: http.StatusInternalServerError, Message: "server error", Data: &echo.Map{"data": err.Error()}})
+			return c.JSON(http.StatusInternalServerError, responses.Response{Status: http.StatusInternalServerError, Message: "error", Data: &echo.Map{"data": err.Error()}})
 		}
 	}
 
@@ -97,7 +97,7 @@ func EditUser(c echo.Context) error {
 
 //function to delete a user
 func DeleteUser(c echo.Context) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	userId := c.Param("userId")
 	defer cancel()
 
@@ -106,7 +106,7 @@ func DeleteUser(c echo.Context) error {
 	result, err := userCollection.DeleteOne(ctx, bson.M{"id": objectId})
 
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, responses.Response{Status: http.StatusInternalServerError, Message: "server error", Data: &echo.Map{"data": err.Error()}})
+		return c.JSON(http.StatusInternalServerError, responses.Response{Status: http.StatusInternalServerError, Message: "error", Data: &echo.Map{"data": err.Error()}})
 	}
 
 	if result.DeletedCount < 1 {
