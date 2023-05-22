@@ -16,5 +16,5 @@ func main() {
     //routes
     routes.UserRoute(e)
 
-    e.Logger.Fatal(e.Start(":6060"))
+    e.Logger.Fatal(e.Start(":6050"))
 }
