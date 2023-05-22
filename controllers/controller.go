@@ -30,7 +30,7 @@ func CreateUser(c echo.Context) error {
 
 	newUser := models.User {
 		Id: primitive.NewObjectID(),
-		Name: user.Name,
+		UserName: user.UserName,
 		Email: user.Email,
 		Password: user.Password,
 	}
@@ -75,7 +75,7 @@ func EditUser(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, responses.Response{Status: http.StatusBadRequest, Message: "error", Data: &echo.Map{"data": err.Error()}})
 	}
 
-	update := bson.M{"name": user.Name, "email": user.Email, "password": user.Password}
+	update := bson.M{"username": user.UserName, "email": user.Email, "password": user.Password}
 
 	result, err := userCollection.UpdateOne(ctx, bson.M{"id": objectId}, bson.M{"$set": update})
 
