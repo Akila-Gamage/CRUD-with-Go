@@ -53,7 +53,7 @@ func GetUser(c echo.Context) error {
 
 	objectId, _ := primitive.ObjectIDFromHex(userId)
 
-	err := userCollection.FindOne(ctx, bson.M{"id": objectId}).Decode(&user)
+	err := userCollection.FindOne(ctx, bson.M{"_id": objectId}).Decode(&user)
 
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, responses.Response{Status: http.StatusInternalServerError, Message: "error", Data: &echo.Map{"data": err.Error()}})	
@@ -77,7 +77,7 @@ func EditUser(c echo.Context) error {
 
 	update := bson.M{"name": user.Name, "email": user.Email, "password": user.Password}
 
-	result, err := userCollection.UpdateOne(ctx, bson.M{"id": objectId}, bson.M{"$set": update})
+	result, err := userCollection.UpdateOne(ctx, bson.M{"_id": objectId}, bson.M{"$set": update})
 
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, responses.Response{Status: http.StatusInternalServerError, Message: "error", Data: &echo.Map{"data": err.Error()}})
@@ -85,7 +85,7 @@ func EditUser(c echo.Context) error {
 
 	var updatedUser models.User
 	if result.MatchedCount == 1 {
-		err = userCollection.FindOne(ctx, bson.M{"id": objectId}).Decode(&updatedUser)
+		err = userCollection.FindOne(ctx, bson.M{"_id": objectId}).Decode(&updatedUser)
 
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, responses.Response{Status: http.StatusInternalServerError, Message: "error", Data: &echo.Map{"data": err.Error()}})
@@ -103,7 +103,7 @@ func DeleteUser(c echo.Context) error {
 
 	objectId, _ := primitive.ObjectIDFromHex(userId)
 
-	result, err := userCollection.DeleteOne(ctx, bson.M{"id": objectId})
+	result, err := userCollection.DeleteOne(ctx, bson.M{"_id": objectId})
 
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, responses.Response{Status: http.StatusInternalServerError, Message: "error", Data: &echo.Map{"data": err.Error()}})
