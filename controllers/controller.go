@@ -115,3 +115,27 @@ func DeleteUser(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, responses.Response{Status: http.StatusOK, Message: "success", Data: &echo.Map{"data": "User deleted"}})
 }
+
+//function to Get all the users
+func GetAllUsers(c echo.Context) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	var users []models.User
+	defer cancel()
+
+	results, err := userCollection.Find(ctx, bson.M{})
+
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.Response{Status: http.StatusInternalServerError, Message: "error", Data: &echo.Map{"data": err.Error()}})
+	}
+
+	defer results.Close(ctx)
+	for results.Next(ctx) {
+		var singleUser models.User
+		if err = results.Decode(&singleUser); err != nil {
+					return c.JSON(http.StatusInternalServerError, responses.Response{Status: http.StatusInternalServerError, Message: "error", Data: &echo.Map{"data": err.Error()}})
+		}
+
+		users = append(users, singleUser)
+	}
+	return c.JSON(http.StatusOK, responses.Response{Status: http.StatusOK, Message: "success", Data: &echo.Map{"data": users}})
+}
