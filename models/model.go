@@ -9,3 +9,9 @@ type User struct {
 	Email		string			   `json:"email,omitempty"`
 	Password	string			   `json:"password,omitempty"`
 }
+
+//struct to input login data
+type Userlogin struct {
+	Name 		string 		`json:"name,omitempty"`
+	Password 	string		`json:"password,omitempty"`
+}
