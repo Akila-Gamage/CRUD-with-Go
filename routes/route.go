@@ -15,4 +15,5 @@ func UserRoute(e *echo.Echo){
 	e.PUT("/user/:userId", controllers.EditUser)
 	e.DELETE("/user/:userId", controllers.DeleteUser)
 	e.GET("/users", controllers.GetAllUsers)
+	e.POST("/login", controllers.Login)
 }
