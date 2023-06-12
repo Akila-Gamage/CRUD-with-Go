@@ -139,3 +139,28 @@ func GetAllUsers(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, responses.Response{Status: http.StatusOK, Message: "success", Data: &echo.Map{"data": users}})
 }
+
+//function to login in flutter
+func Login(c echo.Context) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	var userlogin models.Userlogin
+	defer cancel()
+
+	//bind the request body to user
+	if err := c.Bind(&userlogin); err != nil {
+		return c.JSON(http.StatusBadRequest, responses.Response{Status: http.StatusBadRequest, Message: "error", Data: &echo.Map{"data": err.Error()}})
+	}
+
+	newUser := models.Userlogin {
+		Name: userlogin.Name,
+		Password: userlogin.Password,
+	}
+
+	err := userCollection.FindOne(ctx, newUser).Decode(&userlogin)
+
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.Response{Status: http.StatusInternalServerError, Message: "error", Data: &echo.Map{"data": err.Error()}})
+	}
+
+	return c.JSON(http.StatusCreated, responses.Response{Status: http.StatusCreated, Message: "success", Data: &echo.Map{"data": userlogin}})
+}
